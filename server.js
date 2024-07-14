@@ -2,24 +2,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
-mongoose.connect('mongodb+srv://kamran123:yDW7yklOOCuVd6nd@serverlessinstance0.28e8a8n.mongodb.net/RootData?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-// Event listener for successful connection
-mongoose.connection.on('connected', () => {
-  console.log('Connected to the database');
-});
+const app = express();
+const PORT = process.env.PORT || 6000;
 
-// Event listener for connection errors
-mongoose.connection.on('error', (err) => {
-  console.error(`Database connection error: ${err}`);
-});
+console.log('Attempting to start server on port:', PORT);
 
-// Event listener for disconnected state
-mongoose.connection.on('disconnected', () => {
-  console.log('Disconnected from the database');
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
+// Your middleware and routes go here
+
+app.listen(PORT, (err) => {
+  if (err) {
+    console.error('Error starting server:', err);
+  } else {
+    console.log(`Server is running on port ${PORT}`);
+  }
 });
 
 // Close the Mongoose connection if the Node process ends
@@ -29,8 +32,6 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
-
-const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -613,10 +614,4 @@ app.get('/api/cart/:id', (req, res) => {
   CartModel.findById(req.params.id)
     .then((cartItem) => res.json(cartItem))
     .catch((error) => res.status(500).send(error));
-});
-
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
