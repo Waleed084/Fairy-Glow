@@ -1,58 +1,48 @@
 // assets
-import { IconKey } from '@tabler/icons';
-import { IconBed, IconBedFlat, IconHanger, IconSofa, IconCurrencyEuro } from '@tabler/icons-react';
+import { IconUserPlus, IconBusinessplan, IconDeviceTabletUp, IconSend2 } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconKey,
-  IconBed,
-  IconBedFlat,
-  IconHanger,
-  IconSofa,
-  IconCurrencyEuro
+  IconUserPlus,
+  IconBusinessplan,
+  IconDeviceTabletUp,
+  IconSend2
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const pages = {
   id: 'pages',
-  title: 'Categories',
+  title: 'Payments',
   type: 'group',
   children: [
     {
-      id: 'Bed',
-      title: 'UK Beds',
+      id: 'Training Bonus',
+      title: 'Training Bonus',
       type: 'item',
-      url: '/pages/uk-bed',
-      icon: icons.IconBed
+      url: '/payments/training-bonus',
+      icon: icons.IconUserPlus
     },
     {
-      id: 'Mattress',
-      title: 'UK Mattress',
+      id: 'Invest Now',
+      title: 'Invest Now',
       type: 'item',
-      url: '/pages/companies',
-      icon: icons.IconBedFlat
+      url: '/payments/invest',
+      icon: icons.IconBusinessplan
     },
     {
-      id: 'Wardrobe',
-      title: 'UK Wardrobe',
+      id: 'Withdraw',
+      title: 'Withdraw',
       type: 'item',
-      url: '/pages/companies',
-      icon: icons.IconHanger
+      url: '/payments/withdraw',
+      icon: icons.IconDeviceTabletUp
     },
     {
-      id: 'Sofas',
-      title: 'UK Sofas',
+      id: 'Money Transfer',
+      title: 'Money Transfer',
       type: 'item',
-      url: '/pages/companies',
-      icon: icons.IconSofa
-    },
-    {
-      id: 'Europe',
-      title: 'Europe',
-      type: 'item',
-      url: '/pages/companies',
-      icon: icons.IconCurrencyEuro
+      url: '/payments/money-transfer',
+      icon: icons.IconSend2
     }
   ]
 };

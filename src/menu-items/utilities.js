@@ -1,53 +1,59 @@
-// assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
-import { IconShoppingCart } from '@tabler/icons-react';
+// Icon assets
+import { IconCashRegister, IconCreditCardRefund, IconCreditCardPay, IconChartHistogram } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconTypography,
-  IconPalette,
-  IconShadow,
-  IconWindmill,
-  IconShoppingCart
+  IconCashRegister,
+  IconCreditCardRefund,
+  IconCreditCardPay,
+  IconChartHistogram
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
-  id: 'utilities',
-  title: 'Utilities',
+  id: 'Transaction',
+  title: 'Transaction',
   type: 'group',
   children: [
     {
-      id: 'Cart',
-      title: 'Cart',
+      id: 'All Transactions',
+      title: 'All Transactions',
       type: 'item',
-      url: '/utils/cart',
-      icon: icons.IconShoppingCart,
+      url: '/Transactions/all-transactions',
+      icon: icons.IconCashRegister,
       breadcrumbs: false
     },
     {
-      id: 'util-typography',
-      title: 'Luxury Bed',
+      id: 'Deposit History',
+      title: 'Deposit History',
       type: 'item',
-      url: '/utils/util-typography',
-      icon: icons.IconTypography,
+      url: '/Transactions/deposit-history',
+      icon: icons.IconCreditCardRefund,
       breadcrumbs: false
     },
     {
-      id: 'util-color',
-      title: 'Divan',
+      id: 'Withdraw History',
+      title: 'Withdraw History',
       type: 'item',
-      url: '/utils/util-color',
-      icon: icons.IconPalette,
+      url: '/Transactions/withdraw-history',
+      icon: icons.IconCreditCardPay,
       breadcrumbs: false
     },
     {
-      id: 'util-shadow',
-      title: 'Mattress',
+      id: 'Training Bonus History',
+      title: 'Training Bonus History',
       type: 'item',
-      url: '/utils/util-shadow',
-      icon: icons.IconShadow,
+      url: '/Transactions/training-bonus-history',
+      icon: icons.IconChartHistogram,
+      breadcrumbs: false
+    },
+    {
+      id: 'Investment History',
+      title: 'Investment History',
+      type: 'item',
+      url: '/Transactions/investment-history',
+      icon: icons.IconChartHistogram,
       breadcrumbs: false
     }
   ]

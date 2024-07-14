@@ -7,15 +7,17 @@ import Loadable from 'ui-component/Loadable';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
-// utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/SleighBed')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Devan')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Mattress')));
-const UkBed = Loadable(lazy(() => import('views/pages/categories/UkBed')));
-const Companies = Loadable(lazy(() => import('views/pages/companies/Companies')));
-const OrderDetails = Loadable(lazy(() => import('views/pages/order-details/OrderDetails')));
-const Cart = Loadable(lazy(() => import('views/pages/cart/Cart')));
-const CartOrderDetail = Loadable(lazy(() => import('views/pages/cart/CartOrderDetail')));
+// Payment routing
+const TraningBonus = Loadable(lazy(() => import('views/pages/TrainingBonus')));
+const Invest = Loadable(lazy(() => import('views/pages/Invest')));
+const WithDraw = Loadable(lazy(() => import('views/pages/WithDraw')));
+const MoneyTransfer = Loadable(lazy(() => import('views/pages/MoneyTransfer')));
+// Transaction routing
+const AllTransaction = Loadable(lazy(() => import('views/utilities/AllTransaction')));
+const DepositHistory = Loadable(lazy(() => import('views/utilities/DepositHistory')));
+const WithdrawHistory = Loadable(lazy(() => import('views/utilities/WithdrawHistory')));
+const TrainingBonusHistory = Loadable(lazy(() => import('views/utilities/TrainingBonusHistory')));
+const InvestmentHistory = Loadable(lazy(() => import('views/utilities/InvestmentHistory')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
 
@@ -39,42 +41,47 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'cart',
-          element: <Cart />
-        },
-        {
-          path: 'cart/:id',
-          element: <CartOrderDetail />
+          path: 'all-transactions',
+          element: <AllTransaction />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
+          path: 'deposit-history',
+          element: <DepositHistory />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-color',
-          element: <UtilsColor />
+          path: 'withdraw-history',
+          element: <WithdrawHistory />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-shadow',
-          element: <UtilsShadow />
+          path: 'training-bonus-history',
+          element: <TrainingBonusHistory />
+        }
+      ]
+    },
+    {
+      path: 'Transactions',
+      children: [
+        {
+          path: 'investment-history',
+          element: <InvestmentHistory />
         }
       ]
     },
@@ -97,19 +104,23 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'pages',
+      path: 'payments',
       children: [
         {
-          path: 'uk-bed',
-          element: <UkBed />
+          path: 'training-bonus',
+          element: <TraningBonus />
         },
         {
-          path: 'companies/:type',
-          element: <Companies />
+          path: 'invest',
+          element: <Invest />
         },
         {
-          path: 'properties/:type/:company',
-          element: <OrderDetails />
+          path: 'withdraw',
+          element: <WithDraw />
+        },
+        {
+          path: 'money-transfer',
+          element: <MoneyTransfer />
         }
       ]
     }
