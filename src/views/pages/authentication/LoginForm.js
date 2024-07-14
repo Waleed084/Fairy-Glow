@@ -17,6 +17,7 @@ import { useAuth } from 'views/pages/authentication/AuthContext';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,7 +32,6 @@ function Copyright(props) {
 }
 
 // TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function LoginForm() {
@@ -42,6 +42,7 @@ export default function LoginForm() {
     usernameOrEmail: '',
     password: ''
   });
+  const [error, setError] = useState(''); // Define setError
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -135,6 +136,7 @@ export default function LoginForm() {
                 <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="I Accept terms and conditions." />
               </Grid>
             </Grid>
+            {error && <Typography color="error">{error}</Typography>}
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
