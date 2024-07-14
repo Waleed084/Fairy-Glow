@@ -1,41 +1,58 @@
 // assets
 import { IconKey } from '@tabler/icons';
+import { IconBed, IconBedFlat, IconHanger, IconSofa, IconCurrencyEuro } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconKey
+  IconKey,
+  IconBed,
+  IconBedFlat,
+  IconHanger,
+  IconSofa,
+  IconCurrencyEuro
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const pages = {
   id: 'pages',
-  title: 'Pages',
-  caption: 'Pages Caption',
+  title: 'Categories',
   type: 'group',
   children: [
     {
-      id: 'authentication',
-      title: 'Authentication',
-      type: 'collapse',
-      icon: icons.IconKey,
-
-      children: [
-        {
-          id: 'login3',
-          title: 'Login',
-          type: 'item',
-          url: '/pages/login/login3',
-          target: true
-        },
-        {
-          id: 'register3',
-          title: 'Register',
-          type: 'item',
-          url: '/pages/register/register3',
-          target: true
-        }
-      ]
+      id: 'Bed',
+      title: 'UK Beds',
+      type: 'item',
+      url: '/pages/uk-bed',
+      icon: icons.IconBed
+    },
+    {
+      id: 'Mattress',
+      title: 'UK Mattress',
+      type: 'item',
+      url: '/pages/companies',
+      icon: icons.IconBedFlat
+    },
+    {
+      id: 'Wardrobe',
+      title: 'UK Wardrobe',
+      type: 'item',
+      url: '/pages/companies',
+      icon: icons.IconHanger
+    },
+    {
+      id: 'Sofas',
+      title: 'UK Sofas',
+      type: 'item',
+      url: '/pages/companies',
+      icon: icons.IconSofa
+    },
+    {
+      id: 'Europe',
+      title: 'Europe',
+      type: 'item',
+      url: '/pages/companies',
+      icon: icons.IconCurrencyEuro
     }
   ]
 };

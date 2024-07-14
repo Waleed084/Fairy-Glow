@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from 'serviceWorker';
 import App from 'App';
 import { store } from 'store';
+import { AuthProvider } from 'views/pages/authentication/AuthContext';
 
 // style + assets
 import 'assets/scss/style.scss';
@@ -20,7 +21,9 @@ const root = createRoot(container); // createRoot(container!) if you use TypeScr
 root.render(
   <Provider store={store}>
     <BrowserRouter basename={config.basename}>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </Provider>
 );

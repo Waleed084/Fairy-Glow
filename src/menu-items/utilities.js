@@ -1,12 +1,14 @@
 // assets
 import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+import { IconShoppingCart } from '@tabler/icons-react';
 
 // constant
 const icons = {
   IconTypography,
   IconPalette,
   IconShadow,
-  IconWindmill
+  IconWindmill,
+  IconShoppingCart
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -17,8 +19,16 @@ const utilities = {
   type: 'group',
   children: [
     {
+      id: 'Cart',
+      title: 'Cart',
+      type: 'item',
+      url: '/utils/cart',
+      icon: icons.IconShoppingCart,
+      breadcrumbs: false
+    },
+    {
       id: 'util-typography',
-      title: 'Typography',
+      title: 'Luxury Bed',
       type: 'item',
       url: '/utils/util-typography',
       icon: icons.IconTypography,
@@ -26,7 +36,7 @@ const utilities = {
     },
     {
       id: 'util-color',
-      title: 'Color',
+      title: 'Divan',
       type: 'item',
       url: '/utils/util-color',
       icon: icons.IconPalette,
@@ -34,35 +44,11 @@ const utilities = {
     },
     {
       id: 'util-shadow',
-      title: 'Shadow',
+      title: 'Mattress',
       type: 'item',
       url: '/utils/util-shadow',
       icon: icons.IconShadow,
       breadcrumbs: false
-    },
-    {
-      id: 'icons',
-      title: 'Icons',
-      type: 'collapse',
-      icon: icons.IconWindmill,
-      children: [
-        {
-          id: 'tabler-icons',
-          title: 'Tabler Icons',
-          type: 'item',
-          url: '/icons/tabler-icons',
-          breadcrumbs: false
-        },
-        {
-          id: 'material-icons',
-          title: 'Material Icons',
-          type: 'item',
-          external: true,
-          target: '_blank',
-          url: 'https://mui.com/material-ui/material-icons/',
-          breadcrumbs: false
-        }
-      ]
     }
   ]
 };

@@ -8,14 +8,16 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
+const UtilsTypography = Loadable(lazy(() => import('views/utilities/SleighBed')));
+const UtilsColor = Loadable(lazy(() => import('views/utilities/Devan')));
+const UtilsShadow = Loadable(lazy(() => import('views/utilities/Mattress')));
+const UkBed = Loadable(lazy(() => import('views/pages/categories/UkBed')));
+const Companies = Loadable(lazy(() => import('views/pages/companies/Companies')));
+const OrderDetails = Loadable(lazy(() => import('views/pages/order-details/OrderDetails')));
+const Cart = Loadable(lazy(() => import('views/pages/cart/Cart')));
+const CartOrderDetail = Loadable(lazy(() => import('views/pages/cart/CartOrderDetail')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
-
-// sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -33,6 +35,19 @@ const MainRoutes = {
         {
           path: 'default',
           element: <DashboardDefault />
+        }
+      ]
+    },
+    {
+      path: 'utils',
+      children: [
+        {
+          path: 'cart',
+          element: <Cart />
+        },
+        {
+          path: 'cart/:id',
+          element: <CartOrderDetail />
         }
       ]
     },
@@ -82,8 +97,21 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'sample-page',
-      element: <SamplePage />
+      path: 'pages',
+      children: [
+        {
+          path: 'uk-bed',
+          element: <UkBed />
+        },
+        {
+          path: 'companies/:type',
+          element: <Companies />
+        },
+        {
+          path: 'properties/:type/:company',
+          element: <OrderDetails />
+        }
+      ]
     }
   ]
 };

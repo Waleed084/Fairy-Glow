@@ -1,16 +1,12 @@
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Box, List, ListItem, ListItemText, Typography, Button, CircularProgress } from '@mui/material';
 
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
-
-// assets
-import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
-
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   overflow: 'hidden',
@@ -37,63 +33,66 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   }
 }));
 
-// ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
+const TotalIncomeLightCard = () => {
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const TotalIncomeLightCard = ({ isLoading }) => {
-  const theme = useTheme();
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  const fetchFiles = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/files`);
+      setFiles(response.data.files);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+    }
+  };
+
+  const downloadFile = async (fileId) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/download/${fileId}`, {
+        responseType: 'blob' // specify response type as blob
+      });
+      // create a temporary anchor element to trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', response.headers['content-disposition'].split(';')[1].trim().split('=')[1]); // extract filename from content-disposition header
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link); // remove the link from the DOM once downloaded
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
 
   return (
-    <>
-      {isLoading ? (
-        <TotalIncomeCard />
-      ) : (
-        <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2 }}>
-            <List sx={{ py: 0 }}>
-              <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
-                <ListItemAvatar>
-                  <Avatar
-                    variant="rounded"
-                    sx={{
-                      ...theme.typography.commonAvatar,
-                      ...theme.typography.largeAvatar,
-                      backgroundColor: theme.palette.warning.light,
-                      color: theme.palette.warning.dark
-                    }}
-                  >
-                    <StorefrontTwoToneIcon fontSize="inherit" />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  sx={{
-                    py: 0,
-                    mt: 0.45,
-                    mb: 0.45
-                  }}
-                  primary={<Typography variant="h4">$203k</Typography>}
-                  secondary={
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        color: theme.palette.grey[500],
-                        mt: 0.5
-                      }}
-                    >
-                      Total Income
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            </List>
-          </Box>
-        </CardWrapper>
-      )}
-    </>
-  );
-};
+    <CardWrapper border={false} content={false}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          Latest Prices
+        </Typography>
 
-TotalIncomeLightCard.propTypes = {
-  isLoading: PropTypes.bool
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <List>
+            {files.map((file) => (
+              <ListItem key={file._id}>
+                <ListItemText primary={file.filename} />
+                <Button variant="contained" color="primary" onClick={() => downloadFile(file._id)}>
+                  Download
+                </Button>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
+    </CardWrapper>
+  );
 };
 
 export default TotalIncomeLightCard;
