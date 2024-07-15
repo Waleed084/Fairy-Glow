@@ -11,6 +11,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 const TraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/TrainingBonus')));
 const UploadTraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/UploadTrainingBonus')));
 const Invest = Loadable(lazy(() => import('views/pages/invest/Invest')));
+const ReferralPaymentVerification = Loadable(lazy(() => import('views/pages/invest/ReferralPaymentVerification')));
 const WithDraw = Loadable(lazy(() => import('views/pages/WithDraw')));
 const MoneyTransfer = Loadable(lazy(() => import('views/pages/MoneyTransfer')));
 // Transaction routing
@@ -19,8 +20,9 @@ const DepositHistory = Loadable(lazy(() => import('views/utilities/DepositHistor
 const WithdrawHistory = Loadable(lazy(() => import('views/utilities/WithdrawHistory')));
 const TrainingBonusHistory = Loadable(lazy(() => import('views/utilities/TrainingBonusHistory')));
 const InvestmentHistory = Loadable(lazy(() => import('views/utilities/InvestmentHistory')));
-const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
-const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+// Wallet routing
+const Wallet = Loadable(lazy(() => import('views/wallet/Wallet')));
+const AddWallet = Loadable(lazy(() => import('views/wallet/AddWallet')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -87,20 +89,20 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'icons',
+      path: 'wallet',
       children: [
         {
-          path: 'tabler-icons',
-          element: <UtilsTablerIcons />
+          path: 'all',
+          element: <Wallet />
         }
       ]
     },
     {
-      path: 'icons',
+      path: 'wallet',
       children: [
         {
-          path: 'material-icons',
-          element: <UtilsMaterialIcons />
+          path: 'add',
+          element: <AddWallet />
         }
       ]
     },
@@ -120,8 +122,17 @@ const MainRoutes = {
           ]
         },
         {
-          path: 'invest',
-          element: <Invest />
+          path: 'referral',
+          children: [
+            {
+              path: 'plans',
+              element: <Invest />
+            },
+            {
+              path: 'upload',
+              element: <ReferralPaymentVerification />
+            }
+          ]
         },
         {
           path: 'withdraw',

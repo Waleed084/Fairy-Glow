@@ -1,19 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, TextField, Typography, Grid, Card, CardMedia, Paper, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
-import { useAuth } from 'views/pages/authentication/AuthContext';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useHistory
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'views/pages/authentication/AuthContext';
 
-const UploadTrainingBonus = () => {
-  const { username } = useAuth(); // Get the username from authcontext
-  const navigate = useNavigate(); // Initialize useHistory
+const ReferralPaymentVerification = () => {
+  const navigate = useNavigate();
+  const { username } = useAuth(); // Assuming you have an authentication context providing username
+  // Fetch selected plan details from localStorage
+  const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
 
   const [transactionId, setTransactionId] = useState('');
-  const [transactionAmount, setTransactionAmount] = useState(500);
+  const [transactionAmount, setTransactionAmount] = useState(0); // Default value
   const [gateway, setGateway] = useState('');
   const [image, setImage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(''); // Success message state
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Effect to set transactionAmount initially from selectedPlan
+  useEffect(() => {
+    if (selectedPlan && selectedPlan.price) {
+      setTransactionAmount(selectedPlan.price);
+    }
+  }, [selectedPlan]);
+
+  // Handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('transactionId', transactionId);
+    formData.append('transactionAmount', selectedPlan.price); // Use selected plan's price
+    formData.append('gateway', gateway);
+    formData.append('image', image);
+
+    // Append selected plan details to formData
+    formData.append('planName', selectedPlan.name);
+    formData.append('planPRICE', selectedPlan.price);
+    formData.append('advancePoints', selectedPlan.advancePoints);
+    formData.append('DirectPoint', selectedPlan.DirectPoint);
+    formData.append('IndirectPoint', selectedPlan.DirectPoint);
+    formData.append('parent', selectedPlan.parent);
+    formData.append('grandParent', selectedPlan.grandParent);
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/referral-payment/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      console.log('Form submitted:', response.data);
+      setSuccessMessage('Referral Payment details uploaded successfully.');
+      setErrorMessage('');
+
+      // Reset form state after submission
+      setTransactionId('');
+      setTransactionAmount(0); // Reset to default
+      setGateway('');
+      setImage(null);
+
+      // Remove selectedPlan from localStorage
+      localStorage.removeItem('selectedPlan');
+
+      // Navigate to success page or previous page
+      setTimeout(() => {
+        navigate('/payments/referral/plans'); // Navigate to success page after submission
+      }, 3500); // Adjust timing as needed
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setErrorMessage('Error submitting form. Please try again.');
+      setSuccessMessage('');
+    }
+  };
 
   // Handle file selection
   const handleFileChange = (event) => {
@@ -25,46 +81,11 @@ const UploadTrainingBonus = () => {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('transactionId', transactionId);
-    formData.append('transactionAmount', transactionAmount);
-    formData.append('gateway', gateway);
-    formData.append('image', image);
-
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/training-bonus/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      console.log('Form submitted:', response.data);
-      setSuccessMessage('Training bonus approval data uploaded successfully.');
-      setErrorMessage('');
-
-      // Reset form state after submission
-      setTransactionId('');
-      setTransactionAmount(500);
-      setGateway('');
-      setImage(null);
-
-      // Navigate after 2-3 seconds
-      setTimeout(() => {
-        navigate('/payments/training-bonus');
-      }, 3500);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setErrorMessage('Error submitting form. Please try again.');
-      setSuccessMessage('');
-    }
-  };
-
   return (
     <Grid container spacing={3} justifyContent="center">
       <Grid item xs={12}>
         <Typography variant="h3" gutterBottom sx={{ color: 'secondary.main', textAlign: 'center' }}>
-          Upload Training Bonus Details
+          Upload Payment Verification Details
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -85,12 +106,11 @@ const UploadTrainingBonus = () => {
               <Select
                 labelId="transactionAmount-label"
                 id="transactionAmount"
-                value={transactionAmount}
+                value={transactionAmount} // Use selected plan's price
                 onChange={(e) => setTransactionAmount(e.target.value)}
                 label="Transaction Amount"
               >
-                <MenuItem value={500}>500</MenuItem>
-                <MenuItem value={400}>400</MenuItem>
+                <MenuItem value={transactionAmount}>{transactionAmount}</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal" variant="outlined">
@@ -145,4 +165,4 @@ const UploadTrainingBonus = () => {
   );
 };
 
-export default UploadTrainingBonus;
+export default ReferralPaymentVerification;

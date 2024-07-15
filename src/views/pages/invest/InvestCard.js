@@ -27,7 +27,7 @@ const InvestCard = ({ plan, onClick, isLoading }) => {
             Indirect: {grandParent * 100}%
           </Typography>
           <Button variant="contained" color="primary">
-            Invest Now
+            Choose
           </Button>
         </Box>
       )}

@@ -25,7 +25,9 @@ const Invest = () => {
   }, []);
 
   const handlePlanClick = (plan) => {
-    navigate(`/pages/properties/${type}/${plan._id}`);
+    // Store plan in a persistent state
+    localStorage.setItem('selectedPlan', JSON.stringify(plan));
+    navigate('/payments/referral/upload');
   };
 
   return (
@@ -35,7 +37,7 @@ const Invest = () => {
           <ArrowBack />
         </IconButton>
         <Typography variant="h3" gutterBottom sx={{ marginLeft: 2, paddingTop: '7px', color: 'secondary.dark' }}>
-          Investment Plans
+          Choose Investment Plan for Referral
         </Typography>
       </Box>
       <Grid container spacing={3}>

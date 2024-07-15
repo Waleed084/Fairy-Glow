@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const path = require('path'); 
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -79,6 +80,22 @@ const userSchema = new mongoose.Schema(
     trainingBonusBalance: {
       type: Number,
       default: 0
+    },
+    plan: {
+      type: String,
+      required: true
+    },
+    rank: {
+      type: String,
+      required: true
+    },
+    parent: {
+      type: Number,
+      required: true
+    },
+    grandParent: {
+      type: Number,
+      required: true
     }
   },
   {
@@ -252,546 +269,122 @@ app.get('/api/plans', async (req, res) => {
   }
 });
 
-// ----------------------------------||Legacy Code||---------------------------------
+// ]-------------------||Get Profile Data by username from User Model||-------------------------[
 
-const SleighSchema = new mongoose.Schema({
-  submissionDate: {
-    type: Date,
-    required: true
-  },
-  Type: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  },
-  Seller: {
-    type: String,
-    required: true
-  },
-  route: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: String,
-    required: true
-  },
-  Color: {
-    type: String,
-    required: true
-  },
-  HeadBoard: {
-    type: String,
-    required: true
-  },
-  mattress: {
-    type: String,
-    required: true
-  },
-  ottoman: {
-    type: String,
-    required: true
-  },
-  Glift: {
-    type: String,
-    required: true
-  },
-  threeD: {
-    type: String,
-    required: true
-  },
-  totalPrice: {
-    type: String,
-    required: true
-  },
-  Company: {
-    type: String,
-    required: true
-  },
-  customerDetails: {
-    type: String,
-    required: true
-  },
-  postalCode: {
-    type: String,
-    required: true
-  },
-  remarks: {
-    type: String,
-    required: true
-  },
-  sprice: {
-    type: String,
-    required: true
-  },
-  profit: {
-    type: String,
-    required: true
-  }
-});
-
-const SleighModel = mongoose.model('SleighModel', SleighSchema); // Create a Mongoose model
-
-app.post('/api/postSleigh', async (req, res) => {
+app.get('/api/users/:username', async (req, res) => {
   try {
-    const objectToSave = req.body;
-    const savedObject = await SleighModel.create(objectToSave); // Save the object using the model
-    res.status(200).json({ message: 'Object saved successfully.', savedObject });
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      fullName: user.fullName,
+      rank: user.rank,
+      plan: user.plan,
+      parent: user.parent,
+      grandParent: user.grandParent
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-const DevanSchema = new mongoose.Schema({
-  submissionDate: {
-    type: Date,
-    required: true
+// Define schema for ReferralPaymentVerification
+const referralPaymentSchema = new mongoose.Schema(
+  {
+    username: { type: String, required: true },
+    transactionId: { type: String, required: true },
+    transactionAmount: { type: Number, required: true },
+    gateway: { type: String, required: true },
+    planName: { type: String, required: true },
+    planPRICE: { type: Number, required: true },
+    advancePoints: { type: Number, required: true },
+    DirectPoint: { type: Number, required: true },
+    IndirectPoint: { type: Number, required: true },
+    parent: { type: String, required: true },
+    grandParent: { type: String, required: true },
+    imagePath: { type: String, required: true }
   },
-  Type: {
-    type: String,
-    required: true
+  { timestamps: true }
+);
+const ReferralPaymentVerification = mongoose.model('ReferralPaymentVerification', referralPaymentSchema);
+
+// Multer storage configuration
+const referralStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads/referral')); // Upload directory for referral payments
   },
-  status: {
-    type: String,
-    required: true
-  },
-  Seller: {
-    type: String,
-    required: true
-  },
-  route: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: String,
-    required: true
-  },
-  Color: {
-    type: String,
-    required: true
-  },
-  HeadBoard: {
-    type: String,
-    required: true
-  },
-  mattress: {
-    type: String,
-    required: true
-  },
-  Set: {
-    type: String,
-    required: true
-  },
-  assembly: {
-    type: String,
-    required: true
-  },
-  siplet: {
-    type: String,
-    required: true
-  },
-  totalPrice: {
-    type: String,
-    required: true
-  },
-  Company: {
-    type: String,
-    required: true
-  },
-  customerDetails: {
-    type: String,
-    required: true
-  },
-  sprice: {
-    type: String,
-    required: true
-  },
-  postalCode: {
-    type: String,
-    required: true
-  },
-  remarks: {
-    type: String,
-    required: true
-  },
-  profit: {
-    type: String,
-    required: true
+  filename: function (req, file, cb) {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+    cb(null, `${uuidv4()}-${uniqueSuffix}`);
   }
 });
 
-const DevanModel = mongoose.model('DevanModel', DevanSchema); // Create a Mongoose model
+const uploadReferral = multer({ storage: referralStorage });
 
-const MattressSchema = new mongoose.Schema({
-  submissionDate: {
-    type: Date,
-    required: true
-  },
-  Type: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  },
-  Seller: {
-    type: String,
-    required: true
-  },
-  route: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: String,
-    required: true
-  },
-  mattress: {
-    type: String,
-    required: true
-  },
-  totalPrice: {
-    type: String,
-    required: true
-  },
-  Company: {
-    type: String,
-    required: true
-  },
-  customerDetails: {
-    type: String,
-    required: true
-  },
-  sprice: {
-    type: String,
-    required: true
-  },
-  postalCode: {
-    type: String,
-    required: true
-  },
-  remarks: {
-    type: String
-  },
-  profit: {
-    type: String,
-    required: true
-  }
-});
-
-const MattressModel = mongoose.model('MattressModel', MattressSchema); // Create a Mongoose model
-
-app.post('/api/postMattress', async (req, res) => {
+// POST route to handle payment verification upload
+app.post('/api/referral-payment/upload', uploadReferral.single('image'), async (req, res) => {
   try {
-    const objectToSave = req.body;
-    const savedObject = await MattressModel.create(objectToSave); // Save the object using the model
-    res.status(200).json({ message: 'Object saved successfully.', savedObject });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.post('/api/postDevan', async (req, res) => {
-  try {
-    const objectToSave = req.body;
-    const savedObject = await DevanModel.create(objectToSave); // Save the object using the model
-    res.status(200).json({ message: 'Object saved successfully.', savedObject });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Authentication Endpoint
-app.post('/api/authenticate', async (req, res) => {
-  const { usernameOrEmail, password } = req.body;
-
-  try {
-    const user = await User.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
-      password: password
+    // Create a new ReferralPaymentVerification instance
+    const newPayment = new ReferralPaymentVerification({
+      username: req.body.username,
+      transactionId: req.body.transactionId,
+      transactionAmount: req.body.transactionAmount,
+      gateway: req.body.gateway,
+      planName: req.body.planName,
+      planPRICE: req.body.planPRICE,
+      advancePoints: req.body.advancePoints,
+      DirectPoint: req.body.DirectPoint,
+      IndirectPoint: req.body.IndirectPoint,
+      parent: req.body.parent,
+      grandParent: req.body.grandParent,
+      imagePath: req.file.path // Store path to uploaded image
     });
 
-    if (user) {
-      res.json({ success: true, username: user.username });
-    } else {
-      res.json({ success: false });
-    }
+    // Save to MongoDB
+    await newPayment.save();
+
+    // Respond with success message
+    res.status(201).json({ message: 'Payment verification details saved successfully.' });
   } catch (error) {
-    console.error('Error during authentication:', error);
-    res.status(500).json({ success: false, error: 'Server error' });
+    console.error('Error saving payment verification:', error);
+    res.status(500).json({ error: 'Failed to save payment verification details.' });
   }
 });
-
-// User Schema and Model (Assuming you have a User model)
-/* const userSchema = new mongoose.Schema({
- // username: String,
-//  email: String,
-  bankName: String,
-  accountNumber: String,
-  authenticationPin: String,
-  address: String,
-  password: String
-});
-
-const User = mongoose.model('User', userSchema);
-const Admin = mongoose.model('Admin', {
-  name: String,
-  sellerPin: String,
-  AdminPin: String,
-  authenticationPin: String,
-  password: String
-}); */
-
-const documentSchema = new mongoose.Schema({
-  filename: String,
-  contentType: String,
-  size: Number,
-  content: Buffer // Store file content as a Buffer
-  // Define other fields as needed
-});
-const Document = mongoose.model('Document', documentSchema);
-// Initialize GridFS asynchronously
-const conn = mongoose.connection;
-conn.once('open', () => {
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: 'uploads'
-  });
-});
-
-// Enable CORS
-app.use(cors());
-
-// Route to download files
-app.get('/api/download/:fileId', async (req, res) => {
-  const fileId = req.params.fileId;
-
-  try {
-    // Retrieve the document from the database
-    const document = await Document.findById(fileId);
-
-    if (!document) {
-      return res.status(404).json({ error: 'File not found' });
-    }
-
-    // Set the content type header based on the document's content type
-    res.setHeader('Content-Type', document.contentType);
-
-    // Set the content-disposition header to force download
-    res.setHeader('Content-Disposition', `attachment; filename=${document.filename}`);
-
-    // Stream the binary content of the document to the client
-    res.send(document.content);
-  } catch (error) {
-    console.error('Error fetching file:', error);
-    res.status(500).json({ error: 'Error fetching file' });
-  }
-});
-
-// Route to fetch files
-app.get('/api/files', async (req, res) => {
-  try {
-    // Assuming you have a Document model defined in your backend
-    const files = await Document.find(); // Retrieve files from your database
-    res.status(200).json({ files });
-  } catch (error) {
-    console.error('Error fetching files:', error);
-    res.status(500).json({ error: 'Error fetching files' });
-  }
-});
-
-// Endpoint to get Devan orders by seller name
-app.get('/api/submissions/devan/:username', async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    // Fetch orders based on the provided username from the database
-    const orders = await DevanModel.find({ Seller: username }); // Assuming you have a DevanModel for orders
-
-    res.json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-app.get('/api/submissions/mattress/:username', async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    // Fetch orders based on the provided username from the database
-    const orders = await MattressModel.find({ Seller: username }); // Assuming you have a DevanModel for orders
-
-    res.json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-// Endpoint to get Sleigh orders by seller name
-app.get('/api/submissions/sleigh/:username', async (req, res) => {
-  const username = req.params.username;
-
-  try {
-    // Fetch orders based on the provided username from the database
-    const orders = await SleighModel.find({ Seller: username }); // Assuming you have a DevanModel for orders
-
-    res.json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-const commissionSchema = new mongoose.Schema({
-  username: String,
-  commissionAmount: Number
-});
-const Commission = mongoose.model('Commission', commissionSchema);
-
-//Endpoint to get monthly Commission
-app.post('/api/commission/this-month/:username', async (req, res) => {
-  // Changed to app.post()
-  try {
-    const { username } = req.params; // Access the username from the request body
-    const commission = await Commission.findOne({ username });
-    if (!commission) {
-      return res.status(404).json({ message: 'Commission not found' });
-    }
-    res.json({ commissionAmount: commission.commissionAmount });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//Endpoint to get all commission
-app.post('/api/commission/:username', async (req, res) => {
-  try {
-    const { username } = req.params;
-    // Find all documents with the matching username
-    const commissions = await Commission.find({ username });
-
-    if (commissions.length === 0) {
-      return res.status(404).json({ message: 'Commission not found' });
-    }
-
-    // Sum up commission amounts
-    const totalCommission = commissions.reduce((total, commission) => {
-      return total + commission.commissionAmount;
-    }, 0);
-
-    res.json({ totalCommission });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-const bedSchema = mongoose.Schema;
-
-const ukBedSchema = new bedSchema({
-  type: {
-    type: String,
-    required: true
+// User Accounts Model
+const userAccountsSchema = new mongoose.Schema(
+  {
+    username: { type: String, required: true },
+    gateway: { type: String, required: true },
+    accountNumber: { type: String, required: true },
+    accountTitle: { type: String, required: true }
   },
-  companies: [
-    {
-      type: String,
-      required: true
-    }
-  ]
-});
+  { timestamps: true }
+);
 
-const UKBed = mongoose.model('UKBed', ukBedSchema);
+const UserAccounts = mongoose.model('UserAccounts', userAccountsSchema);
 
-// Get all types of UK beds to show cards
-app.get('/api/ukbeds/types', async (req, res) => {
+// ------------------||POST route to add user payment account||------------------------
+
+app.post('/api/user-accounts/add', async (req, res) => {
+  const { username, gateway, accountNumber, accountTitle } = req.body;
+
   try {
-    const ukBedTypes = await UKBed.find({});
-    res.json(ukBedTypes);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Create a new UserAccounts instance
+    const newUserAccount = new UserAccounts({
+      username,
+      gateway,
+      accountNumber,
+      accountTitle
+    });
+
+    // Save to MongoDB
+    await newUserAccount.save();
+
+    // Respond with success message
+    res.status(201).json({ message: 'Account added successfully.' });
+  } catch (error) {
+    console.error('Error adding account:', error);
+    res.status(500).json({ error: 'Failed to add account.' });
   }
-});
-
-// Get companies for a specific type of UK bed
-app.get('/api/ukbeds/types/:type', async (req, res) => {
-  try {
-    const ukBedType = await UKBed.findOne({ type: req.params.type });
-    if (!ukBedType) {
-      return res.status(404).json({ message: 'Type not found' });
-    }
-    res.json(ukBedType.companies);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-// GET /api/companies
-app.get('/companies', async (req, res) => {
-  try {
-    const companies = await Company.find({});
-    res.json(companies);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Inventory schema
-const InventorySchema = new mongoose.Schema({
-  type: String,
-  company: String,
-  properties: [
-    {
-      name: String,
-      choices: [String]
-    }
-  ]
-});
-
-const InventoryModel = mongoose.model('Inventory', InventorySchema);
-
-// Cart schema
-const CartSchema = new mongoose.Schema({
-  type: String,
-  company: String,
-  properties: Map
-});
-
-const CartModel = mongoose.model('Cart', CartSchema);
-
-// Get properties for a specific type and company
-app.get('/api/inventory/properties/:type/:company', (req, res) => {
-  const { type, company } = req.params;
-  // Fetch properties from the InventoryModel
-  InventoryModel.find({ type, company })
-    .then((properties) => res.json(properties))
-    .catch((error) => res.status(500).send(error));
-});
-
-// Add an order to the cart
-app.post('/api/cart', (req, res) => {
-  const order = req.body;
-  // Save order to the CartModel
-  CartModel.create(order)
-    .then(() => res.status(201).send('Order added to cart'))
-    .catch((error) => res.status(500).send(error));
-});
-
-// Get cart items
-app.get('/api/cart', (req, res) => {
-  CartModel.find()
-    .then((cartItems) => res.json(cartItems))
-    .catch((error) => res.status(500).send(error));
-});
-// Get Cart Items by ID
-app.get('/api/cart/:id', (req, res) => {
-  CartModel.findById(req.params.id)
-    .then((cartItem) => res.json(cartItem))
-    .catch((error) => res.status(500).send(error));
 });
