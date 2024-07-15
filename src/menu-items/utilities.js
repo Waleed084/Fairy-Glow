@@ -1,68 +1,60 @@
-// assets
-import { IconTypography, IconPalette, IconShadow, IconWindmill } from '@tabler/icons';
+// Icon assets
+import { IconCashRegister, IconCreditCardRefund, IconCreditCardPay, IconChartHistogram } from '@tabler/icons-react';
 
 // constant
 const icons = {
-  IconTypography,
-  IconPalette,
-  IconShadow,
-  IconWindmill
+  IconCashRegister,
+  IconCreditCardRefund,
+  IconCreditCardPay,
+  IconChartHistogram
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
-  id: 'utilities',
-  title: 'Utilities',
+  id: 'Transaction',
+  title: 'Transaction',
   type: 'group',
   children: [
     {
-      id: 'util-typography',
-      title: 'Typography',
+      id: 'All Transactions',
+      title: 'All Transactions',
       type: 'item',
-      url: '/utils/util-typography',
-      icon: icons.IconTypography,
+      url: '/Transactions/all-transactions',
+      icon: icons.IconCashRegister,
       breadcrumbs: false
     },
     {
-      id: 'util-color',
-      title: 'Color',
+      id: 'Deposit History',
+      title: 'Deposit History',
       type: 'item',
-      url: '/utils/util-color',
-      icon: icons.IconPalette,
+      url: '/Transactions/deposit-history',
+      icon: icons.IconCreditCardRefund,
       breadcrumbs: false
     },
     {
-      id: 'util-shadow',
-      title: 'Shadow',
+      id: 'Withdraw History',
+      title: 'Withdraw History',
       type: 'item',
-      url: '/utils/util-shadow',
-      icon: icons.IconShadow,
+      url: '/Transactions/withdraw-history',
+      icon: icons.IconCreditCardPay,
       breadcrumbs: false
     },
     {
-      id: 'icons',
-      title: 'Icons',
-      type: 'collapse',
-      icon: icons.IconWindmill,
-      children: [
-        {
-          id: 'tabler-icons',
-          title: 'Tabler Icons',
-          type: 'item',
-          url: '/icons/tabler-icons',
-          breadcrumbs: false
-        },
-        {
-          id: 'material-icons',
-          title: 'Material Icons',
-          type: 'item',
-          external: true,
-          target: '_blank',
-          url: 'https://mui.com/material-ui/material-icons/',
-          breadcrumbs: false
-        }
-      ]
+      id: 'Training Bonus History',
+      title: 'Training Bonus History',
+      type: 'item',
+      url: '/Transactions/training-bonus-history',
+      icon: icons.IconChartHistogram,
+      breadcrumbs: false
+    },
+    {
+      id: 'Investment History',
+      title: 'Investment History',
+      type: 'item',
+      url: '/Transactions/investment-history',
+      icon: icons.IconChartHistogram,
+      breadcrumbs: false
     }
   ]
 };

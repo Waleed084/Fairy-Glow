@@ -7,15 +7,19 @@ import Loadable from 'ui-component/Loadable';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
-// utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
+// Payment routing
+const TraningBonus = Loadable(lazy(() => import('views/pages/TrainingBonus')));
+const Invest = Loadable(lazy(() => import('views/pages/Invest')));
+const WithDraw = Loadable(lazy(() => import('views/pages/WithDraw')));
+const MoneyTransfer = Loadable(lazy(() => import('views/pages/MoneyTransfer')));
+// Transaction routing
+const AllTransaction = Loadable(lazy(() => import('views/utilities/AllTransaction')));
+const DepositHistory = Loadable(lazy(() => import('views/utilities/DepositHistory')));
+const WithdrawHistory = Loadable(lazy(() => import('views/utilities/WithdrawHistory')));
+const TrainingBonusHistory = Loadable(lazy(() => import('views/utilities/TrainingBonusHistory')));
+const InvestmentHistory = Loadable(lazy(() => import('views/utilities/InvestmentHistory')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
-
-// sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -37,29 +41,47 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
+          path: 'all-transactions',
+          element: <AllTransaction />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-color',
-          element: <UtilsColor />
+          path: 'deposit-history',
+          element: <DepositHistory />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'Transactions',
       children: [
         {
-          path: 'util-shadow',
-          element: <UtilsShadow />
+          path: 'withdraw-history',
+          element: <WithdrawHistory />
+        }
+      ]
+    },
+    {
+      path: 'Transactions',
+      children: [
+        {
+          path: 'training-bonus-history',
+          element: <TrainingBonusHistory />
+        }
+      ]
+    },
+    {
+      path: 'Transactions',
+      children: [
+        {
+          path: 'investment-history',
+          element: <InvestmentHistory />
         }
       ]
     },
@@ -82,8 +104,25 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'sample-page',
-      element: <SamplePage />
+      path: 'payments',
+      children: [
+        {
+          path: 'training-bonus',
+          element: <TraningBonus />
+        },
+        {
+          path: 'invest',
+          element: <Invest />
+        },
+        {
+          path: 'withdraw',
+          element: <WithDraw />
+        },
+        {
+          path: 'money-transfer',
+          element: <MoneyTransfer />
+        }
+      ]
     }
   ]
 };

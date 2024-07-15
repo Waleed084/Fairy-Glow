@@ -1,3 +1,6 @@
+import { useAuth } from 'views/pages/authentication/AuthContext';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 // material-ui
@@ -43,6 +46,24 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const TotalIncomeDarkCard = ({ isLoading }) => {
   const theme = useTheme();
+  const [earning, setEarning] = useState(0);
+  const { username } = useAuth();
+
+  useEffect(() => {
+    const fetchCommission = async () => {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/commission/this-month/${username}`);
+        setEarning(response.data.commissionAmount);
+      } catch (error) {
+        console.error('Error fetching commission:', error);
+      }
+    };
+    if (username) {
+      fetchCommission();
+    }
+  }, [username]);
+
+  const earn = earning.toString();
 
   return (
     <>
@@ -74,7 +95,7 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                   }}
                   primary={
                     <Typography variant="h4" sx={{ color: '#fff' }}>
-                      $203k
+                      £{earn} This Month
                     </Typography>
                   }
                   secondary={
