@@ -42,7 +42,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const WelcomeCard = ({ isLoading }) => {
   const theme = useTheme();
-  const { username } = useAuth();
+  const { fullName, username } = useAuth();
   console.log('Authenticated Username:', username);
 
   return (
@@ -73,7 +73,7 @@ const WelcomeCard = ({ isLoading }) => {
                     mt: 0.45,
                     mb: 0.45
                   }}
-                  primary={<Typography variant="h4">Welcome, {username.toUpperCase()}!</Typography>}
+                  primary={<Typography variant="h4">Welcome, {fullName.toUpperCase()}!</Typography>}
                 />
               </ListItem>
             </List>

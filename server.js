@@ -35,6 +35,72 @@ process.on('SIGINT', () => {
 app.use(bodyParser.json());
 app.use(cors());
 
+const userSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
+    balance: {
+      type: Number,
+      default: 0
+    },
+    totalPoints: {
+      type: Number,
+      default: 0
+    },
+    directPoints: {
+      type: Number,
+      default: 0
+    },
+    indirectPoints: {
+      type: Number,
+      default: 0
+    },
+    trainingBonusBalance: {
+      type: Number,
+      default: 0
+    }
+  },
+  {
+    timestamps: true // Automatically adds createdAt and updatedAt timestamps
+  }
+);
+
+const User = mongoose.model('User', userSchema);
+
+// Get full name by username
+app.get('/api/users/fullname/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    res.send({ fullName: user.fullName });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// ----------------------------------||Legacy Code||---------------------------------
+
 const SleighSchema = new mongoose.Schema({
   submissionDate: {
     type: Date,
@@ -312,9 +378,9 @@ app.post('/api/authenticate', async (req, res) => {
 });
 
 // User Schema and Model (Assuming you have a User model)
-const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
+/* const userSchema = new mongoose.Schema({
+ // username: String,
+//  email: String,
   bankName: String,
   accountNumber: String,
   authenticationPin: String,
@@ -329,7 +395,7 @@ const Admin = mongoose.model('Admin', {
   AdminPin: String,
   authenticationPin: String,
   password: String
-});
+}); */
 
 // Registration Endpoint
 app.post('/api/signup', async (req, res) => {
