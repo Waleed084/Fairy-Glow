@@ -102,6 +102,7 @@ app.get('/api/users/fullname/:username', async (req, res) => {
 });
 
 // ]----------------------||Authentication Endpoint||--------------------------------[
+
 app.post('/api/authenticate', async (req, res) => {
   const { usernameOrEmail, password } = req.body;
 
@@ -123,6 +124,7 @@ app.post('/api/authenticate', async (req, res) => {
 });
 
 // ]-------------------------||Registration Endpoint||---------------------------[
+
 app.post('/api/signup', async (req, res) => {
   const formData = req.body;
 
@@ -162,6 +164,7 @@ app.post('/api/signup', async (req, res) => {
 });
 
 //------------------------||Training Bonus Approval Queue||--------------------------
+
 const TrainingBonusApprovalSchema = new mongoose.Schema({
   username: { type: String, required: true },
   transactionId: { type: String, required: true },
@@ -198,7 +201,8 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 app.use(express.json());
 
-// POST route for uploading training bonus data
+// -----------||POST route for uploading training bonus data||---------------
+
 app.post('/api/training-bonus/upload', upload.single('image'), async (req, res) => {
   try {
     const { username, transactionId, transactionAmount, gateway } = req.body;
@@ -222,6 +226,29 @@ app.post('/api/training-bonus/upload', upload.single('image'), async (req, res) 
   } catch (err) {
     console.error('Error uploading training bonus data:', err);
     res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+//       ]------------------------||Investment Plans Model||----------------------------[
+
+const planSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  advancePoints: { type: Number, required: true },
+  DirectPoint: { type: Number, required: true },
+  IndirectPoint: { type: Number, required: true },
+  parent: { type: Number, required: true },
+  grandParent: { type: Number, required: true }
+});
+const Plan = mongoose.model('Plan', planSchema);
+
+//      ]---------------------GET all Plans Documents-----------------------[
+
+app.get('/api/plans', async (req, res) => {
+  try {
+    const plans = await Plan.find();
+    res.json(plans);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -10,7 +10,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 // Payment routing
 const TraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/TrainingBonus')));
 const UploadTraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/UploadTrainingBonus')));
-const Invest = Loadable(lazy(() => import('views/pages/Invest')));
+const Invest = Loadable(lazy(() => import('views/pages/invest/Invest')));
 const WithDraw = Loadable(lazy(() => import('views/pages/WithDraw')));
 const MoneyTransfer = Loadable(lazy(() => import('views/pages/MoneyTransfer')));
 // Transaction routing
