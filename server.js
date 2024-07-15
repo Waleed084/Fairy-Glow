@@ -99,6 +99,65 @@ app.get('/api/users/fullname/:username', async (req, res) => {
   }
 });
 
+// ]----------------------||Authentication Endpoint||--------------------------------[
+app.post('/api/authenticate', async (req, res) => {
+  const { usernameOrEmail, password } = req.body;
+
+  try {
+    const user = await User.findOne({
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      password: password
+    });
+
+    if (user) {
+      res.json({ success: true, username: user.username });
+    } else {
+      res.json({ success: false });
+    }
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+// ]-------------------------||Registration Endpoint||---------------------------[
+app.post('/api/signup', async (req, res) => {
+  const formData = req.body;
+
+  try {
+    // Check if the user already exists based on some unique identifier (e.g., username)
+    const existingUser = await User.findOne({ username: formData.username });
+
+    if (existingUser) {
+      // User with this username already exists
+      return res.json({ success: false, message: 'User with this username already exists.' });
+    }
+
+    // Check the authenticationPin against the sellerPin from the Admin model
+    const admin = await Admin.findOne({ authenticationPin: formData.authenticationPin });
+
+    if (admin) {
+      // If the authenticationPin matches, create a new user record and save it to the database
+      const newUser = new User({
+        username: formData.username,
+        email: formData.email,
+        cnicNumber: formData.cnicNumber,
+        accountNumber: formData.accountNumber,
+        bankName: formData.bankName,
+        authenticationPin: formData.authenticationPin,
+        password: formData.password
+      });
+      await newUser.save();
+      return res.json({ success: true, message: 'User registered successfully.' });
+    } else {
+      // AuthenticationPin does not match any authenticationPin in the Admin model
+      return res.json({ success: false, message: 'Authentication failed. Please check your pin.' });
+    }
+  } catch (error) {
+    console.error('Error during registration:', error);
+    return res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
 // ----------------------------------||Legacy Code||---------------------------------
 
 const SleighSchema = new mongoose.Schema({
@@ -396,45 +455,6 @@ const Admin = mongoose.model('Admin', {
   authenticationPin: String,
   password: String
 }); */
-
-// Registration Endpoint
-app.post('/api/signup', async (req, res) => {
-  const formData = req.body;
-
-  try {
-    // Check if the user already exists based on some unique identifier (e.g., username)
-    const existingUser = await User.findOne({ username: formData.username });
-
-    if (existingUser) {
-      // User with this username already exists
-      return res.json({ success: false, message: 'User with this username already exists.' });
-    }
-
-    // Check the authenticationPin against the sellerPin from the Admin model
-    const admin = await Admin.findOne({ authenticationPin: formData.authenticationPin });
-
-    if (admin) {
-      // If the authenticationPin matches, create a new user record and save it to the database
-      const newUser = new User({
-        username: formData.username,
-        email: formData.email,
-        cnicNumber: formData.cnicNumber,
-        accountNumber: formData.accountNumber,
-        bankName: formData.bankName,
-        authenticationPin: formData.authenticationPin,
-        password: formData.password
-      });
-      await newUser.save();
-      return res.json({ success: true, message: 'User registered successfully.' });
-    } else {
-      // AuthenticationPin does not match any authenticationPin in the Admin model
-      return res.json({ success: false, message: 'Authentication failed. Please check your pin.' });
-    }
-  } catch (error) {
-    console.error('Error during registration:', error);
-    return res.status(500).json({ success: false, error: 'Server error' });
-  }
-});
 
 const documentSchema = new mongoose.Schema({
   filename: String,
