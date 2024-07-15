@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Button, TextField, Typography, Grid, Card, CardMedia, Paper, MenuItem, Select, InputLabel, FormControl, Box } from '@mui/material';
 import { useAuth } from 'views/pages/authentication/AuthContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useHistory
 
 const UploadTrainingBonus = () => {
   const { username } = useAuth(); // Get the username from authcontext
+  const navigate = useNavigate(); // Initialize useHistory
+
   const [transactionId, setTransactionId] = useState('');
   const [transactionAmount, setTransactionAmount] = useState(500);
   const [gateway, setGateway] = useState('');
   const [image, setImage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(''); // Success message state
+  const [errorMessage, setErrorMessage] = useState(''); // Error message state
 
   // Handle file selection
   const handleFileChange = (event) => {
@@ -32,18 +37,26 @@ const UploadTrainingBonus = () => {
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/training-bonus/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('Form submitted:', response.data);
+      setSuccessMessage('Training bonus approval data uploaded successfully.');
+      setErrorMessage('');
+
       // Reset form state after submission
       setTransactionId('');
       setTransactionAmount(500);
       setGateway('');
       setImage(null);
+
+      // Navigate after 2-3 seconds
+      setTimeout(() => {
+        navigate('/payments/training-bonus');
+      }, 5000);
     } catch (error) {
       console.error('Error submitting form:', error);
+      setErrorMessage('Error submitting form. Please try again.');
+      setSuccessMessage('');
     }
   };
 
@@ -116,6 +129,16 @@ const UploadTrainingBonus = () => {
               </Button>
             </Box>
           </form>
+          {successMessage && (
+            <Typography variant="h4" color="success.main" sx={{ marginTop: 2, textAlign: 'center' }}>
+              {successMessage}
+            </Typography>
+          )}
+          {errorMessage && (
+            <Typography variant="h6" color="error.main" sx={{ marginTop: 2, textAlign: 'center' }}>
+              {errorMessage}
+            </Typography>
+          )}
         </Paper>
       </Grid>
     </Grid>
