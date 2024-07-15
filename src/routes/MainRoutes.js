@@ -8,7 +8,8 @@ import Loadable from 'ui-component/Loadable';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
 // Payment routing
-const TraningBonus = Loadable(lazy(() => import('views/pages/TrainingBonus')));
+const TraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/TrainingBonus')));
+const UploadTraningBonus = Loadable(lazy(() => import('views/pages/training-bonus/UploadTrainingBonus')));
 const Invest = Loadable(lazy(() => import('views/pages/Invest')));
 const WithDraw = Loadable(lazy(() => import('views/pages/WithDraw')));
 const MoneyTransfer = Loadable(lazy(() => import('views/pages/MoneyTransfer')));
@@ -107,8 +108,16 @@ const MainRoutes = {
       path: 'payments',
       children: [
         {
-          path: 'training-bonus',
-          element: <TraningBonus />
+          children: [
+            {
+              path: 'training-bonus',
+              element: <TraningBonus />
+            },
+            {
+              path: 'upload',
+              element: <UploadTraningBonus />
+            }
+          ]
         },
         {
           path: 'invest',

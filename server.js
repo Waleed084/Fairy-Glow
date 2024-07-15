@@ -1,11 +1,13 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path'); 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
 console.log('Attempting to start server on port:', PORT);
 
@@ -86,7 +88,7 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model('User', userSchema);
 
-// Get full name by username
+// -----------------------||Get full name of user||---------------------------
 app.get('/api/users/fullname/:username', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
@@ -158,6 +160,71 @@ app.post('/api/signup', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Server error' });
   }
 });
+
+//------------------------||Training Bonus Approval Queue||--------------------------
+const TrainingBonusApprovalSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  transactionId: { type: String, required: true },
+  transactionAmount: { type: Number, required: true },
+  gateway: { type: String, required: true },
+  image: { type: String, required: true },
+  status: { type: String, default: 'pending' } // Initial status set to 'pending'
+});
+
+const TrainingBonusApproval = mongoose.model('TrainingBonusApproval', TrainingBonusApprovalSchema);
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Uploads folder where files will be stored
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext);
+  }
+});
+
+// Multer file filter
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+// Multer upload instance
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+app.use(express.json());
+
+// POST route for uploading training bonus data
+app.post('/api/training-bonus/upload', upload.single('image'), async (req, res) => {
+  try {
+    const { username, transactionId, transactionAmount, gateway } = req.body;
+
+    // Construct the file path for the uploaded image
+    const imagePath = req.file.path;
+
+    // Create new TrainingBonusApproval document
+    const newApproval = new TrainingBonusApproval({
+      username,
+      transactionId,
+      transactionAmount: Number(transactionAmount),
+      gateway,
+      image: imagePath
+    });
+
+    // Save the new document to MongoDB
+    await newApproval.save();
+
+    res.status(201).json({ message: 'Training bonus approval data uploaded successfully.' });
+  } catch (err) {
+    console.error('Error uploading training bonus data:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
 // ----------------------------------||Legacy Code||---------------------------------
 
 const SleighSchema = new mongoose.Schema({
