@@ -182,14 +182,19 @@ app.post('/api/signup', async (req, res) => {
 
 //------------------------||Training Bonus Approval Queue||--------------------------
 
-const TrainingBonusApprovalSchema = new mongoose.Schema({
-  username: { type: String, required: true },
-  transactionId: { type: String, required: true },
-  transactionAmount: { type: Number, required: true },
-  gateway: { type: String, required: true },
-  image: { type: String, required: true },
-  status: { type: String, default: 'pending' } // Initial status set to 'pending'
-});
+const TrainingBonusApprovalSchema = new mongoose.Schema(
+  {
+    username: { type: String, required: true },
+    transactionId: { type: String, required: true },
+    transactionAmount: { type: Number, required: true },
+    gateway: { type: String, required: true },
+    image: { type: String, required: true },
+    status: { type: String, default: 'pending' }
+  },
+  {
+    timestamps: true // Automatically adds createdAt and updatedAt timestamps
+  }
+);
 
 const TrainingBonusApproval = mongoose.model('TrainingBonusApproval', TrainingBonusApprovalSchema);
 
