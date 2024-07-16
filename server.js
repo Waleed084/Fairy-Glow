@@ -315,7 +315,7 @@ const referralStorage = multer.diskStorage({
     cb(null, path.join(__dirname, 'uploads/referral')); // Upload directory for referral payments
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
     cb(null, `${uuidv4()}-${uniqueSuffix}`);
   }
 });
