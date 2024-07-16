@@ -388,3 +388,17 @@ app.post('/api/user-accounts/add', async (req, res) => {
     res.status(500).json({ error: 'Failed to add account.' });
   }
 });
+
+// ]-------------------||GET route to fetch user accounts by username||----------------------[
+
+app.get('/api/user-accounts/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const accounts = await UserAccounts.find({ username });
+    res.status(200).json(accounts);
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ error: 'Failed to fetch accounts.' });
+  }
+});

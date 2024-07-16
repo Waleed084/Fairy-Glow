@@ -25,7 +25,7 @@ const wallet = {
       id: 'Add Wallet',
       title: 'Add Wallet',
       type: 'item',
-      url: '/wallet/all',
+      url: '/wallet/add',
       icon: icons.IconTablePlus
     }
   ]

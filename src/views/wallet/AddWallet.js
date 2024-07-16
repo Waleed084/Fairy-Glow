@@ -47,7 +47,7 @@ const AddWallet = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Paper elevation={3} sx={{ padding: 2 }}>
+        <Paper elevation={3} sx={{ padding: 2, background: 'secondary.light' }}>
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth margin="normal" variant="outlined">
               <InputLabel id="gateway-label">Gateway/Bank</InputLabel>
