@@ -63,7 +63,15 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true
     },
+    phoneNumber: {
+      type: String,
+      required: true
+    },
     balance: {
+      type: Number,
+      default: 0
+    },
+    advancePoints: {
       type: Number,
       default: 0
     },
@@ -89,9 +97,12 @@ const userSchema = new mongoose.Schema(
     },
     rank: {
       type: String,
-      required: true
+      default: 'Buisness Member'
     },
-    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Reference to the parent (referrer)
+    parent: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null
+    }, // Reference to the parent (referrer)
     refPer: {
       type: Number,
       required: true
@@ -140,46 +151,6 @@ app.post('/api/authenticate', async (req, res) => {
   } catch (error) {
     console.error('Error during authentication:', error);
     res.status(500).json({ success: false, error: 'Server error' });
-  }
-});
-
-// ]-------------------------||Registration Endpoint||---------------------------[
-
-app.post('/api/signup', async (req, res) => {
-  const formData = req.body;
-
-  try {
-    // Check if the user already exists based on some unique identifier (e.g., username)
-    const existingUser = await User.findOne({ username: formData.username });
-
-    if (existingUser) {
-      // User with this username already exists
-      return res.json({ success: false, message: 'User with this username already exists.' });
-    }
-
-    // Check the authenticationPin against the sellerPin from the Admin model
-    const admin = await Admin.findOne({ authenticationPin: formData.authenticationPin });
-
-    if (admin) {
-      // If the authenticationPin matches, create a new user record and save it to the database
-      const newUser = new User({
-        username: formData.username,
-        email: formData.email,
-        cnicNumber: formData.cnicNumber,
-        accountNumber: formData.accountNumber,
-        bankName: formData.bankName,
-        authenticationPin: formData.authenticationPin,
-        password: formData.password
-      });
-      await newUser.save();
-      return res.json({ success: true, message: 'User registered successfully.' });
-    } else {
-      // AuthenticationPin does not match any authenticationPin in the Admin model
-      return res.json({ success: false, message: 'Authentication failed. Please check your pin.' });
-    }
-  } catch (error) {
-    console.error('Error during registration:', error);
-    return res.status(500).json({ success: false, error: 'Server error' });
   }
 });
 
@@ -430,5 +401,72 @@ app.get('/api/user-accounts/:username', async (req, res) => {
   } catch (error) {
     console.error('Error fetching accounts:', error);
     res.status(500).json({ error: 'Failed to fetch accounts.' });
+  }
+});
+
+const userPendingSchema = new mongoose.Schema(
+  {
+    planName: { type: String, required: true },
+    planPRICE: { type: Number, required: true },
+    advancePoints: { type: Number, required: true },
+    DirectPoint: { type: Number, required: true },
+    IndirectPoint: { type: Number, required: true },
+    refPer: { type: Number, required: true },
+    refParentPer: { type: Number, required: true },
+    referrerPin: { type: String, required: true, unique: true },
+    referrerId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }
+  },
+  { timestamps: true }
+);
+
+const UserPending = mongoose.model('UserPending', userPendingSchema);
+
+// ]-----------------------||Endpoint for user signup||------------------------[
+
+app.post('/api/signup', async (req, res) => {
+  const { fullName, username, email, password, phoneNumber, referrerPin } = req.body;
+
+  try {
+    // Check if referrerPin exists in UserPending
+    const userPending = await UserPending.findOne({ referrerPin });
+    if (!userPending) {
+      return res.status(400).json({ success: false, message: 'Invalid referrer PIN' });
+    }
+
+    // Check if the email or username already exists in the User model
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email or username already taken' });
+    }
+
+    // Create a new user based on the form data and UserPending document
+    const newUser = new User({
+      fullName,
+      username,
+      email,
+      password,
+      phoneNumber,
+      plan: userPending.planName,
+      rank: '',
+      refPer: userPending.refPer,
+      refParentPer: userPending.refParentPer,
+      parent: userPending.referrerId,
+      // Initialize other fields as needed
+      balance: 0,
+      totalPoints: 0,
+      directPoints: 0,
+      indirectPoints: 0,
+      trainingBonusBalance: 0
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+    await UserPending.findByIdAndRemove(userPending.id);
+
+    // Respond with success
+    res.status(201).json({ success: true, message: 'User registered successfully!' });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
   }
 });
