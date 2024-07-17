@@ -92,7 +92,7 @@ const userSchema = new mongoose.Schema(
       required: true
     },
     parent: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Reference to the parent (referrer)
-    refPerc: {
+    refPer: {
       type: Number,
       required: true
     },
@@ -191,7 +191,7 @@ const TrainingBonusApprovalSchema = new mongoose.Schema(
     transactionId: { type: String, required: true },
     transactionAmount: { type: Number, required: true },
     gateway: { type: String, required: true },
-    image: { type: String, required: true },
+    imagePath: { type: String, required: true },
     status: { type: String, default: 'pending' }
   },
   {
@@ -241,7 +241,7 @@ app.post('/api/training-bonus/upload', upload.single('image'), async (req, res) 
       transactionId,
       transactionAmount: Number(transactionAmount),
       gateway,
-      image: imagePath
+      imagePath: imagePath
     });
 
     // Save the new document to MongoDB
@@ -288,7 +288,7 @@ app.get('/api/users/:username', async (req, res) => {
       fullName: user.fullName,
       rank: user.rank,
       plan: user.plan,
-      refPerc: user.refPerc,
+      refPer: user.refPer,
       refParentPer: user.refParentPer
     });
   } catch (error) {
@@ -308,7 +308,7 @@ const referralPaymentSchema = new mongoose.Schema(
     advancePoints: { type: Number, required: true },
     DirectPoint: { type: Number, required: true },
     IndirectPoint: { type: Number, required: true },
-    refPerc: { type: Number, required: true },
+    refPer: { type: Number, required: true },
     refParentPer: { type: Number, required: true },
     referrerPin: { type: String, required: true, unique: true },
     imagePath: { type: String, required: true },
@@ -364,7 +364,7 @@ app.post('/api/referral-payment/upload', uploadReferral.single('image'), async (
       advancePoints: req.body.advancePoints,
       DirectPoint: req.body.DirectPoint,
       IndirectPoint: req.body.IndirectPoint,
-      refPerc: req.body.parent,
+      refPer: req.body.parent,
       refParentPer: req.body.grandParent,
       referrerPin: referrerPin, // Add referrer pin
       imagePath: req.file.path // Store path to uploaded image

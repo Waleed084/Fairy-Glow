@@ -143,7 +143,7 @@ const ReferralPaymentVerification = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!transactionId || !transactionAmount || !gateway || !image }
+                disabled={!transactionId || !transactionAmount || !gateway || !image}
               >
                 Submit
               </Button>
