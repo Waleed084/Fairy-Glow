@@ -39,9 +39,9 @@ const ReferralPaymentVerification = () => {
     formData.append('planPRICE', selectedPlan.price);
     formData.append('advancePoints', selectedPlan.advancePoints);
     formData.append('DirectPoint', selectedPlan.DirectPoint);
-    formData.append('IndirectPoint', selectedPlan.DirectPoint);
-    formData.append('parent', selectedPlan.parent);
-    formData.append('grandParent', selectedPlan.grandParent);
+    formData.append('IndirectPoint', selectedPlan.IndirectPoint);
+    formData.append('parent', parseFloat(selectedPlan.parent));
+    formData.append('grandParent', parseFloat(selectedPlan.grandParent));
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/referral-payment/upload`, formData, {
@@ -63,7 +63,7 @@ const ReferralPaymentVerification = () => {
       // Navigate to success page or previous page
       setTimeout(() => {
         navigate('/payments/referral/plans'); // Navigate to success page after submission
-      }, 3500); // Adjust timing as needed
+      }, 2000); // Adjust timing as needed
     } catch (error) {
       console.error('Error submitting form:', error);
       setErrorMessage('Error submitting form. Please try again.');
@@ -143,7 +143,7 @@ const ReferralPaymentVerification = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!transactionId || !transactionAmount || !gateway || !image}
+                disabled={!transactionId || !transactionAmount || !gateway || !image }
               >
                 Submit
               </Button>

@@ -52,7 +52,7 @@ const UploadTrainingBonus = () => {
       // Navigate after 2-3 seconds
       setTimeout(() => {
         navigate('/payments/training-bonus');
-      }, 3500);
+      }, 2000);
     } catch (error) {
       console.error('Error submitting form:', error);
       setErrorMessage('Error submitting form. Please try again.');

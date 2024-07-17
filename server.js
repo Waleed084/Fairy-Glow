@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -9,6 +8,9 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+// ------------||Serve static files from the 'uploads' directory||----------------------
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 console.log('Attempting to start server on port:', PORT);
 
@@ -89,11 +91,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    parent: {
+    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Reference to the parent (referrer)
+    refPerc: {
       type: Number,
       required: true
     },
-    grandParent: {
+    refParentPer: {
       type: Number,
       required: true
     }
@@ -201,7 +204,7 @@ const TrainingBonusApproval = mongoose.model('TrainingBonusApproval', TrainingBo
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Uploads folder where files will be stored
+    cb(null, '../uploads/training-bonus'); // Uploads folder where files will be stored
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -273,7 +276,6 @@ app.get('/api/plans', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 // ]-------------------||Get Profile Data by username from User Model||-------------------------[
 
 app.get('/api/users/:username', async (req, res) => {
@@ -286,8 +288,8 @@ app.get('/api/users/:username', async (req, res) => {
       fullName: user.fullName,
       rank: user.rank,
       plan: user.plan,
-      parent: user.parent,
-      grandParent: user.grandParent
+      refPerc: user.refPerc,
+      refParentPer: user.refParentPer
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -306,9 +308,11 @@ const referralPaymentSchema = new mongoose.Schema(
     advancePoints: { type: Number, required: true },
     DirectPoint: { type: Number, required: true },
     IndirectPoint: { type: Number, required: true },
-    parent: { type: String, required: true },
-    grandParent: { type: String, required: true },
-    imagePath: { type: String, required: true }
+    refPerc: { type: Number, required: true },
+    refParentPer: { type: Number, required: true },
+    referrerPin: { type: String, required: true, unique: true },
+    imagePath: { type: String, required: true },
+    status: { type: String, default: 'pending' }
   },
   { timestamps: true }
 );
@@ -317,19 +321,38 @@ const ReferralPaymentVerification = mongoose.model('ReferralPaymentVerification'
 // Multer storage configuration
 const referralStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads/referral')); // Upload directory for referral payments
+    cb(null, '../uploads/referral-plan-payment'); // Upload directory for referral payments
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-    cb(null, `${uuidv4()}-${uniqueSuffix}`);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext);
   }
 });
 
 const uploadReferral = multer({ storage: referralStorage });
 
-// POST route to handle payment verification upload
+//----------------------|| POST route to handle payment verification upload||-------------------
+
+// Function to generate a unique pin
+const generateUniquePin = async () => {
+  let pin;
+  let isUnique = false;
+
+  while (!isUnique) {
+    pin = Math.random().toString(36).substring(2, 12); // Generate a random 10-character string
+    const existingPin = await ReferralPaymentVerification.findOne({ referrerPin: pin });
+    if (!existingPin) {
+      isUnique = true;
+    }
+  }
+
+  return pin;
+};
+
 app.post('/api/referral-payment/upload', uploadReferral.single('image'), async (req, res) => {
   try {
+    // Generate a unique referrer pin
+    const referrerPin = await generateUniquePin();
     // Create a new ReferralPaymentVerification instance
     const newPayment = new ReferralPaymentVerification({
       username: req.body.username,
@@ -341,8 +364,9 @@ app.post('/api/referral-payment/upload', uploadReferral.single('image'), async (
       advancePoints: req.body.advancePoints,
       DirectPoint: req.body.DirectPoint,
       IndirectPoint: req.body.IndirectPoint,
-      parent: req.body.parent,
-      grandParent: req.body.grandParent,
+      refPerc: req.body.parent,
+      refParentPer: req.body.grandParent,
+      referrerPin: referrerPin, // Add referrer pin
       imagePath: req.file.path // Store path to uploaded image
     });
 
@@ -356,6 +380,7 @@ app.post('/api/referral-payment/upload', uploadReferral.single('image'), async (
     res.status(500).json({ error: 'Failed to save payment verification details.' });
   }
 });
+
 // User Accounts Model
 const userAccountsSchema = new mongoose.Schema(
   {
