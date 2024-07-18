@@ -46,25 +46,24 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const TotalIncomeDarkCard = ({ isLoading }) => {
   const theme = useTheme();
-  const [earning, setEarning] = useState(0);
+  const [balance, setBalance] = useState(0);
   const { username } = useAuth();
 
   useEffect(() => {
-    const fetchCommission = async () => {
+    const fetchUserBalance = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/commission/this-month/${username}`);
-        setEarning(response.data.commissionAmount);
+        const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/user/${username}`);
+        setBalance(response.data.balance);
       } catch (error) {
-        console.error('Error fetching commission:', error);
+        console.error('Error fetching user balance:', error);
       }
     };
+
     if (username) {
-      fetchCommission();
+      fetchUserBalance();
     }
   }, [username]);
-
-  const earn = earning.toString();
-
+  const totalBalance = balance.toString();
   return (
     <>
       {isLoading ? (
@@ -95,7 +94,7 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                   }}
                   primary={
                     <Typography variant="h4" sx={{ color: '#fff' }}>
-                      £{earn} This Month
+                      £{totalBalance} This Month
                     </Typography>
                   }
                   secondary={

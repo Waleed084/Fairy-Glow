@@ -451,6 +451,7 @@ app.post('/api/signup', async (req, res) => {
       refPer: userPending.refPer,
       refParentPer: userPending.refParentPer,
       parent: userPending.referrerId,
+      advancePoints: userPending.advancePoints,
       // Initialize other fields as needed
       balance: 0,
       totalPoints: 0,
@@ -468,5 +469,22 @@ app.post('/api/signup', async (req, res) => {
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
+  }
+});
+
+// ]----------------------------||Get Total Balance||-----------------------------[
+
+app.get('/api/user/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({ username }).exec();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ balance: user.balance });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
   }
 });
