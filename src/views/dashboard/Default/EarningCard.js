@@ -13,7 +13,6 @@ import SkeletonEarningCard from 'ui-component/cards/Skeleton/EarningCard';
 // assets
 import EarningIcon from 'assets/images/icons/earning.svg';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -55,24 +54,24 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const EarningCard = ({ isLoading }) => {
   const theme = useTheme();
-  const [earning, setEarning] = useState(0);
+  const [balance, setBalance] = useState(0);
   const { username } = useAuth();
 
   useEffect(() => {
-    const fetchCommission = async () => {
+    const fetchUserBalance = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_API_HOST}/api/commission/${username}`);
-        setEarning(response.data.totalCommission);
+        const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/user/${username}`);
+        setBalance(response.data.balance);
       } catch (error) {
-        console.error('Error fetching commission:', error);
+        console.error('Error fetching user balance:', error);
       }
     };
+
     if (username) {
-      fetchCommission();
+      fetchUserBalance();
     }
   }, [username]);
-
-  const earn = earning.toString();
+  const totalBalance = balance.toString();
 
   return (
     <>
@@ -118,19 +117,10 @@ const EarningCard = ({ isLoading }) => {
               <Grid item>
                 <Grid container alignItems="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>£{earn}</Typography>
+                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>PKR {totalBalance}</Typography>
                   </Grid>
                   <Grid item>
-                    <Avatar
-                      sx={{
-                        cursor: 'pointer',
-                        ...theme.typography.smallAvatar,
-                        backgroundColor: theme.palette.secondary[200],
-                        color: theme.palette.secondary.dark
-                      }}
-                    >
-                      <ArrowUpwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
-                    </Avatar>
+                   
                   </Grid>
                 </Grid>
               </Grid>
@@ -142,7 +132,7 @@ const EarningCard = ({ isLoading }) => {
                     color: theme.palette.secondary[200]
                   }}
                 >
-                  Total Earning
+                  Available Balance
                 </Typography>
               </Grid>
             </Grid>

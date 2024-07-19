@@ -1,10 +1,10 @@
 // assets
-import { IconUserPlus, IconBusinessplan, IconDeviceTabletUp, IconSend2 } from '@tabler/icons-react';
+import { IconUserPlus, IconMoodPlus, IconDeviceTabletUp, IconSend2 } from '@tabler/icons-react';
 
 // constant
 const icons = {
   IconUserPlus,
-  IconBusinessplan,
+  IconMoodPlus,
   IconDeviceTabletUp,
   IconSend2
 };
@@ -24,11 +24,11 @@ const pages = {
       icon: icons.IconUserPlus
     },
     {
-      id: 'Invest Now',
-      title: 'Invest Now',
+      id: 'Add Referral',
+      title: 'Add Referral',
       type: 'item',
-      url: '/payments/invest',
-      icon: icons.IconBusinessplan
+      url: '/payments/referral/plans',
+      icon: icons.IconMoodPlus
     },
     {
       id: 'Withdraw',

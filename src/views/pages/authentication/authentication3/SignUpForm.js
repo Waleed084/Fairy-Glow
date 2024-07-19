@@ -32,14 +32,13 @@ export default function SignUpForm() {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    fullName: '',
     username: '',
     email: '',
-    confirmEmail: '',
-    bankName: '',
-    accountNumber: '',
-    phoneNumber: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phoneNumber: '',
+    referrerPin: ''
   });
 
   const handleInputChange = (e) => {
@@ -50,6 +49,11 @@ export default function SignUpForm() {
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    const re = /^\+?[1-9]\d{1,14}$/; // Simplified phone number validation
+    return re.test(phoneNumber);
   };
 
   const validateForm = () => {
@@ -64,8 +68,8 @@ export default function SignUpForm() {
       errors.email = 'Invalid email address';
     }
 
-    if (formData.email !== formData.confirmEmail) {
-      errors.confirmEmail = 'Emails do not match';
+    if (formData.phoneNumber && !validatePhoneNumber(formData.phoneNumber)) {
+      errors.phoneNumber = 'Invalid phone number';
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -123,6 +127,33 @@ export default function SignUpForm() {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <CustomTextField
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              id="fullName"
+              label="Full Name"
+              error={!!formErrors.fullName}
+              helperText={formErrors.fullName}
+              autoFocus
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <CustomTextField
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              error={!!formErrors.username}
+              helperText={formErrors.username}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <CustomTextField
               name="email"
               value={formData.email}
               onChange={handleInputChange}
@@ -136,59 +167,6 @@ export default function SignUpForm() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <CustomTextField
-              name="confirmEmail"
-              value={formData.confirmEmail}
-              onChange={handleInputChange}
-              required
-              fullWidth
-              id="confirmEmail"
-              label="Confirm Email"
-              error={!!formErrors.confirmEmail}
-              helperText={formErrors.confirmEmail}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CustomTextField
-              name="bankName"
-              value={formData.bankName}
-              onChange={handleInputChange}
-              required
-              fullWidth
-              id="bankName"
-              label="Bank Name"
-              error={!!formErrors.bankName}
-              helperText={formErrors.bankName}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CustomTextField
-              name="accountNumber"
-              value={formData.accountNumber}
-              onChange={handleInputChange}
-              required
-              fullWidth
-              id="accountNumber"
-              label="Account Number"
-              error={!!formErrors.accountNumber}
-              helperText={formErrors.accountNumber}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CustomTextField
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              fullWidth
-              id="userName"
-              label="User Name"
-              error={!!formErrors.username}
-              helperText={formErrors.username}
-              autoFocus
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CustomTextField
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
@@ -198,6 +176,19 @@ export default function SignUpForm() {
               label="Phone Number"
               error={!!formErrors.phoneNumber}
               helperText={formErrors.phoneNumber}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTextField
+              name="referrerPin"
+              value={formData.referrerPin}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              id="referrerPin"
+              label="Referrer PIN"
+              error={!!formErrors.referrerPin}
+              helperText={formErrors.referrerPin}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -228,7 +219,7 @@ export default function SignUpForm() {
               helperText={formErrors.confirmPassword}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <FormControlLabel control={<Checkbox value="allowExtraEmails" color="primary" />} label="I Accept terms and conditions." />
           </Grid>
         </Grid>

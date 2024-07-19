@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Typography, Card, Grid } from '@mui/material';
 import CompanyCard from 'ui-component/cards/CompanyCard'; // Adjust the import path as necessary
 import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 
 const CardContent = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -26,13 +27,18 @@ const ClaimButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
   '&:hover': {
-    backgroundColor: theme.palette.primary.dark,
-  },
+    backgroundColor: theme.palette.primary.dark
+  }
 }));
 
 const TrainingBonus = () => {
   const trainingBonus = process.env.REACT_APP_TRAINING_BONUS;
   const trainingFee = process.env.REACT_APP_TRAINING_FEE;
+  const navigate = useNavigate();
+
+  const handleClaimButtonClick = () => {
+    navigate('/payments/upload');
+  };
 
   return (
     <Grid item xs={12} sm={12} md={4} lg={4}>
@@ -45,7 +51,7 @@ const TrainingBonus = () => {
                 fontSize: 18,
                 mb: 1,
                 color: '#FFFFFF',
-                textAlign: 'center', // Center text horizontally
+                textAlign: 'center' // Center text horizontally
               }}
             >
               Training Bonus
@@ -56,7 +62,7 @@ const TrainingBonus = () => {
                 fontSize: 18,
                 color: '#FFFFFF',
                 mb: 3,
-                textAlign: 'center', // Center text horizontally
+                textAlign: 'center' // Center text horizontally
               }}
             >
               PKR {trainingBonus}
@@ -65,13 +71,15 @@ const TrainingBonus = () => {
               variant="h5"
               style={{
                 color: '#FFFFFF',
-                textAlign: 'center', // Center text horizontally
+                textAlign: 'center' // Center text horizontally
               }}
             >
               Training Fee: PKR {trainingFee}
             </Typography>
           </InnerCard>
-          <ClaimButton variant="contained">Claim Now</ClaimButton>
+          <ClaimButton variant="contained" onClick={handleClaimButtonClick}>
+            Claim Now
+          </ClaimButton>
         </CardContent>
       </CompanyCard>
     </Grid>

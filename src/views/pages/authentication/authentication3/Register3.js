@@ -33,7 +33,7 @@ export default function SignUp() {
               flexDirection: 'column',
               alignItems: 'center',
               flexGrow: 1,
-              width: '66.66%', // 2/3 screen space
+              width: { xs: '100%', md: '66.66%' }, // 100% width on small screens, 2/3 on larger screens
               overflowY: 'auto',
               paddingX: { xs: 2, md: 6 }
             }}
@@ -47,7 +47,7 @@ export default function SignUp() {
               alignItems: 'center',
               justifyContent: 'center',
               flexGrow: 1,
-              width: '33.33%', // 1/3 screen space
+              width: '33.33%', // 1/3 screen space on larger screens
               bgcolor: '#8e44ad', // Violet color
               borderRadius: '40px 0 0 40px', // Left side rounded
               overflow: 'hidden',
