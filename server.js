@@ -483,8 +483,36 @@ app.get('/api/user/:username', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json({ balance: user.balance });
+    res.status(200).json({
+      balance: user.balance,
+      totalPoints: user.totalPoints,
+      advancePoints: user.advancePoints,
+      trainingBonusBalance: user.trainingBonusBalance
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
+  }
+});
+// Endpoint to get the count of direct referrals
+app.get('/api/referrals', async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    // Find the main user by username
+    const mainUser = await User.findOne({ username });
+
+    if (!mainUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Count the number of users who have the main user's _id as their parent
+    const directReferralsCount = await User.countDocuments({ parent: mainUser._id });
+    const directReferral = await User.findOne({ parent: mainUser._id });
+    const IndirectReferralsCount = await User.countDocuments({ parent: directReferral._id });
+
+    return res.json({ DirectCount: directReferralsCount, IndirectCount: IndirectReferralsCount });
+  } catch (error) {
+    console.error('Error counting direct referrals:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });

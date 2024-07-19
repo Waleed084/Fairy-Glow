@@ -7,7 +7,8 @@ import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeDarkCard from './TotalIncomeDarkCard';
 import WelcomeCard from './WelcomeCard';
 import TotalIncomeLightCard from './TotalIncomeLightCard';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
+import DirectReferral from './DirectReferral';
+import IndirectReferral from './IndirectReferral';
 import { gridSpacing } from 'store/constant';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
@@ -42,11 +43,18 @@ const Dashboard = () => {
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} lg={8} md={6} sm={12}>
-            <TotalGrowthBarChart isLoading={isLoading} />
+            <DirectReferral isLoading={isLoading} />
           </Grid>
-          <Grid item xs={12} lg={4} md={6} sm={12}>
-            <TotalIncomeLightCard isLoading={isLoading} />
+          <Grid item xs={12} lg={8} md={6} sm={12}>
+            <IndirectReferral isLoading={isLoading} />
           </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+        <Grid item xs={12} lg={4} md={6} sm={12}>
+          <TotalIncomeLightCard isLoading={isLoading} />
+        </Grid>
         </Grid>
       </Grid>
     </Grid>
