@@ -85,9 +85,6 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                   <Grid item xs={6}>
                     <Grid container alignItems="center">
                       <Grid item>
-                        <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0 }}>PKR {trainingBonus}</Typography>
-                      </Grid>
-                      <Grid item>
                         <Avatar
                           sx={{
                             ...theme.typography.smallAvatar,
@@ -99,6 +96,10 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                           <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
                         </Avatar>
                       </Grid>
+                      <Grid item>
+                        <Typography sx={{ fontSize: '2rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0 }}>PKR {trainingBonus}</Typography>
+                      </Grid>
+
                       <Grid item xs={12}>
                         <Typography
                           sx={{

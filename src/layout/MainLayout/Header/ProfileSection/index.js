@@ -30,7 +30,7 @@ const ProfileSection = () => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
-  const { username } = useAuth();
+  const { username, setAuthenticatedUsername } = useAuth();
 
   const [userData, setUserData] = useState(null);
   const [selectedIndex] = useState(-1);
@@ -49,7 +49,13 @@ const ProfileSection = () => {
   }, [username]);
 
   const handleLogout = async () => {
-    console.log('Logout');
+    try {
+      setAuthenticatedUsername(null); // ------Clear the username from context
+      navigate('/pages/login/login3'); // -----Navigate to the login page
+      console.log('Logged Out!');
+    } catch (error) {
+      console.error('There was an error logging out!', error);
+    }
   };
 
   const handleClose = (event) => {
@@ -73,6 +79,7 @@ const ProfileSection = () => {
 
   const handlePasswordChange = () => {
     navigate('/password-change');
+    setOpen(false);
   };
 
   return (

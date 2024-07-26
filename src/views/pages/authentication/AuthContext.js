@@ -35,8 +35,13 @@ export const AuthProvider = ({ children }) => {
   }, [username]);
 
   const setAuthenticatedUsername = (newUsername) => {
-    localStorage.setItem('authenticatedUsername', newUsername);
-    sessionStorage.setItem('authenticatedUsername', newUsername);
+    if (newUsername) {
+      localStorage.setItem('authenticatedUsername', newUsername);
+      sessionStorage.setItem('authenticatedUsername', newUsername);
+    } else {
+      localStorage.removeItem('authenticatedUsername');
+      sessionStorage.removeItem('authenticatedUsername');
+    }
     setUsername(newUsername);
   };
 
