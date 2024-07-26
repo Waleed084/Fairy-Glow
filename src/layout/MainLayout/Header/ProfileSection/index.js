@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
@@ -29,8 +29,8 @@ import { IconLogout, IconSettings } from '@tabler/icons';
 const ProfileSection = () => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
-  //const navigate = useNavigate();
-  const { username } = useAuth();
+  const navigate = useNavigate();
+  const { username, setAuthenticatedUsername } = useAuth();
 
   const [userData, setUserData] = useState(null);
   const [selectedIndex] = useState(-1);
@@ -49,7 +49,13 @@ const ProfileSection = () => {
   }, [username]);
 
   const handleLogout = async () => {
-    console.log('Logout');
+    try {
+      setAuthenticatedUsername(null); // ------Clear the username from context
+      navigate('/pages/login/login3'); // -----Navigate to the login page
+      console.log('Logged Out!');
+    } catch (error) {
+      console.error('There was an error logging out!', error);
+    }
   };
 
   const handleClose = (event) => {
@@ -70,6 +76,11 @@ const ProfileSection = () => {
     }
     prevOpen.current = open;
   }, [open]);
+
+  const handlePasswordChange = () => {
+    navigate('/password-change');
+    setOpen(false);
+  };
 
   return (
     <>
@@ -188,6 +199,12 @@ const ProfileSection = () => {
                           }
                         }}
                       >
+                        <ListItemButton sx={{ borderRadius: `${customization.borderRadius}px` }} onClick={handlePasswordChange}>
+                          <ListItemIcon>
+                            <IconSettings stroke={1.5} size="1.3rem" />
+                          </ListItemIcon>
+                          <ListItemText primary={<Typography variant="body2">Password Change</Typography>} />
+                        </ListItemButton>
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}

@@ -23,6 +23,7 @@ const InvestmentHistory = Loadable(lazy(() => import('views/utilities/Investment
 // Wallet routing
 const Wallet = Loadable(lazy(() => import('views/wallet/Wallet')));
 const AddWallet = Loadable(lazy(() => import('views/wallet/AddWallet')));
+const PasswordChange = Loadable(lazy(() => import('../layout/MainLayout/Header/ProfileSection/PasswordChange')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -143,6 +144,10 @@ const MainRoutes = {
           element: <MoneyTransfer />
         }
       ]
+    },
+    {
+      path: '/password-change',
+      element: <PasswordChange />
     }
   ]
 };

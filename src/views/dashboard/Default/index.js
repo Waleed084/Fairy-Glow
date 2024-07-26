@@ -42,19 +42,19 @@ const Dashboard = () => {
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} lg={8} md={6} sm={12}>
+          <Grid item xs={6} lg={6} md={6} sm={6}>
             <DirectReferral isLoading={isLoading} />
           </Grid>
-          <Grid item xs={12} lg={8} md={6} sm={12}>
+          <Grid item xs={6} lg={6} md={6} sm={6}>
             <IndirectReferral isLoading={isLoading} />
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-        <Grid item xs={12} lg={4} md={6} sm={12}>
-          <TotalIncomeLightCard isLoading={isLoading} />
-        </Grid>
+          <Grid item xs={12} lg={4} md={6} sm={12}>
+            <TotalIncomeLightCard isLoading={isLoading} />
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

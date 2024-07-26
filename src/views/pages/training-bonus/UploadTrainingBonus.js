@@ -90,7 +90,6 @@ const UploadTrainingBonus = () => {
                 label="Transaction Amount"
               >
                 <MenuItem value={500}>500</MenuItem>
-                <MenuItem value={400}>400</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth margin="normal" variant="outlined">

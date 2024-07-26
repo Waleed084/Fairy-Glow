@@ -516,3 +516,23 @@ app.get('/api/referrals', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// ----------------------||Api to handle Password change||----------------------
+app.put('/api/change-password', async (req, res) => {
+  const { username, currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user || user.password !== currentPassword) {
+      return res.status(401).json({ message: 'Invalid current password' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
